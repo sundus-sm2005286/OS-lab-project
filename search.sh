@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# Configuration
+
 OUTPUT_FILE="bigfile.txt"
-ADMIN_EMAIL="QUID@qu.edu.qa"  # Replace with actual email
+ADMIN_EMAIL="ta2102604@qu.edu.qa"
 
 # Function to find large files
 find_large_files() {
     local search_date=$(date "+%Y-%m-%d %H:%M:%S")
-    # wipe file
+    
     echo "" > "$OUTPUT_FILE"
 
     echo "Search Date: $search_date" 
@@ -20,7 +20,7 @@ find_large_files() {
 
     # Count files
     local file_count=$(grep -c "^-" "$OUTPUT_FILE")
-    echo "found about $file_count files"
+    echo "found $file_count files"
     echo "Total files found: $file_count" >> "$OUTPUT_FILE"
 }
 
@@ -32,10 +32,10 @@ send_email() {
     fi
 }
 
-# Main execution
+# Main
 main() {
     find_large_files
-    echo "Sending email.....[Need to setup an email server]"
+    echo "Sending email.."
     send_email
 }
 
