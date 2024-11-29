@@ -1,36 +1,39 @@
 #!/bin/bash
 
+echo "Login script started"
+
 MAX_LOGIN_ATTEMPTS=3
 ATTEMPT_LOG="invalid_attempts.log"
-SERVER_USER="sundus"  # server username
-SERVER_ADDR="192.168.177.129"   #  server IP
+SERVER_USER="sondus"  # Server username
+SERVER_ADDR="127.0.0.1"   # Server IP 192.168.177.128
 
-# invalid login attempts
+# Record invalid login attempts
 record_invalid_attempt() {
     local user="$1"
     echo "$(date "+%Y-%m-%d %H:%M:%S") - Failed login attempt by user: $user" >> "$ATTEMPT_LOG"
 }
 
-# send log file to the server
+# Send log file to the server using SFTP
 upload_log_to_server() {
     local timestamp=$(date "+%Y%m%d_%H%M%S")
     local remote_log="client_${timestamp}_invalid_attempts.log"
     
+    echo "Uploading log to server..."
     sftp "$SERVER_USER@$SERVER_ADDR" <<EOF
-put "$ATTEMPT_LOG" "$remote_log"
+put "$ATTEMPT_LOG" "$remote_log" || echo "SFTP upload failed"
 quit
 EOF
 }
 
-# user logout after a delay
+# Logout after a delay
 initiate_logout() {
     echo "Logging out in 30 seconds..."
     at now + 30 seconds <<EOF
-gnome-session-quit --force
+gnome-session-quit --force && echo "Logout initiated" || echo "Logout failed"
 EOF
 }
 
-# Main / login process
+# Main login process
 login_process() {
     local attempt_count=1
     
@@ -39,8 +42,8 @@ login_process() {
         read -s -p "Enter password: " pass
         echo
         
-        # SSH login
-        if sshpass -p "$pass" ssh -o StrictHostKeyChecking=no "$user@$SERVER_ADDR" exit 2>/dev/null; then
+        # SSH login attempt with timeout
+        if sshpass -p "$pass" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 "$user@$SERVER_ADDR" exit 2>/dev/null; then
             echo "Login successful!"
             exit 0
         else
@@ -55,5 +58,6 @@ login_process() {
     initiate_logout
 }
 
-# main/start
+# Main/start
 login_process
+echo "Login script finished"
