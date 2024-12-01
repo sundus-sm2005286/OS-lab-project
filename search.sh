@@ -2,12 +2,12 @@
 
 
 OUTPUT_FILE="bigfile.txt"
-ADMIN_EMAIL="ta2102604@qu.edu.qa"
+ADMIN_EMAIL="sm2005286@qu.edu.qa"  # Replace with actual email
 
-# Function to find large files
+
 find_large_files() {
     local search_date=$(date "+%Y-%m-%d %H:%M:%S")
-    
+
     echo "" > "$OUTPUT_FILE"
 
     echo "Search Date: $search_date" 
@@ -20,24 +20,24 @@ find_large_files() {
 
     # Count files
     local file_count=$(grep -c "^-" "$OUTPUT_FILE")
-    echo "found $file_count files"
+    echo "found about $file_count files"
     echo "Total files found: $file_count" >> "$OUTPUT_FILE"
 }
 
-# Function to send email
+#send email
 send_email() {
     if [ -s "$OUTPUT_FILE" ]; then
-        # Using mail command to send email
+
         mail -s "Large Files Report" "$ADMIN_EMAIL" < "$OUTPUT_FILE"
     fi
 }
 
-# Main
+
 main() {
     find_large_files
-    echo "Sending email.."
+    echo "Sending email..."
     send_email
 }
 
-# Execute main function
+
 main
