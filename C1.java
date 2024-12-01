@@ -34,7 +34,7 @@ public class C1 {
         try {
             System.out.println("Attempting to run script: " + scriptPath);
 
-            // Ensure the script exists
+
             File scriptFile = new File(scriptPath);
             if (!scriptFile.exists()) {
                 System.err.println("Script not found: " + scriptPath);
@@ -114,7 +114,7 @@ public class C1 {
         }
     }
     
-    // content from the saved system info file
+
     private static void displayFileContent(String filePath) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
